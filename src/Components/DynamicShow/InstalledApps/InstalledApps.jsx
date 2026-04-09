@@ -4,51 +4,65 @@ import { IoMdDownload } from "react-icons/io";
 import { TbDeviceSdCard } from "react-icons/tb";
 import useDataFetch from "../../../CustomHooks/useDataFetch";
 import { InstalledAppsContext } from "../../../Contexts/InstalledAppsContext";
+import { toast } from "react-toastify";
 
 const InstalledApps = () => {
   const [installedApps, setInstalledApps] = use(InstalledAppsContext);
   const allApps = useDataFetch();
   const [sortBy, setSortBy] = useState("size");
 
-  const normalizedInstalledApps = installedApps.reduce((appsList, installedApp) => {
+
+  const installedAppsWithDetails = [];
+
+  for (const installedApp of installedApps) {
     const installedAppId =
       typeof installedApp === "object" ? installedApp.id : installedApp;
 
-    if (!installedAppId) {
-      return appsList;
+  
+    const appFromAllApps = allApps.find((app) => app.id === installedAppId);
+    const fallbackApp =
+      typeof installedApp === "object" ? installedApp : null;
+    const appDetails = appFromAllApps || fallbackApp;
+
+    if (!appDetails) {
+      continue;
     }
 
-    const matchedApp =
-      allApps.find((singleApp) => singleApp.id === installedAppId) ??
-      (typeof installedApp === "object" ? installedApp : null);
-
-    if (!matchedApp || appsList.some((singleApp) => singleApp.id === matchedApp.id)) {
-      return appsList;
-    }
-
-    appsList.push(matchedApp);
-    return appsList;
-  }, []);
-
-  const sortedInstalledApps = [...normalizedInstalledApps].sort((firstApp, secondApp) => {
-    if (sortBy === "title") {
-      return firstApp.title.localeCompare(secondApp.title);
-    }
-
-    if (sortBy === "rating") {
-      return secondApp.ratingAvg - firstApp.ratingAvg;
-    }
-
-    return secondApp.size - firstApp.size;
-  });
-
-  const handleUninstall = (appId) => {
-    setInstalledApps(
-      installedApps.filter(
-        (installedApp) =>
-          (typeof installedApp === "object" ? installedApp.id : installedApp) !== appId
-      )
+    const appAlreadyAdded = installedAppsWithDetails.some(
+      (app) => app.id === appDetails.id
     );
+
+    if (!appAlreadyAdded) {
+      installedAppsWithDetails.push(appDetails);
+    }
+  }
+
+  const sortedInstalledApps = [...installedAppsWithDetails];
+
+  if (sortBy === "title") {
+    sortedInstalledApps.sort((firstApp, secondApp) =>
+      firstApp.title.localeCompare(secondApp.title)
+    );
+  } else if (sortBy === "rating") {
+    sortedInstalledApps.sort(
+      (firstApp, secondApp) => secondApp.ratingAvg - firstApp.ratingAvg
+    );
+  } else {
+    sortedInstalledApps.sort(
+      (firstApp, secondApp) => secondApp.size - firstApp.size
+    );
+  }
+
+  const handleUninstall = (singleApp) => {
+    toast.warning(`${singleApp.title} is uninstalled successfully`);
+    const updatedInstalledApps = installedApps.filter((installedApp) => {
+      const installedAppId =
+        typeof installedApp === "object" ? installedApp.id : installedApp;
+
+      return installedAppId !== singleApp.id;
+    });
+
+    setInstalledApps(updatedInstalledApps);
   };
 
   return (
@@ -127,7 +141,7 @@ const InstalledApps = () => {
 
                 <button
                   type="button"
-                  onClick={() => handleUninstall(singleApp.id)}
+                  onClick={() => handleUninstall(singleApp)}
                   className="inline-flex h-8 items-center justify-center self-start rounded-sm bg-[#17c964] px-4 text-xs font-semibold text-white transition hover:bg-[#11b458] md:self-center"
                 >
                   Uninstall
