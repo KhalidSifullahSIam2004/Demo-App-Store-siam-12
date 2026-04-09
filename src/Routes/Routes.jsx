@@ -3,6 +3,7 @@ import Root from "../Components/AlwaysShow/Root/Root";
 import NotFoundPage from "../Components/DynamicShow/NotFoundPage/NotFoundPage";
 import AllApps from "../Components/DynamicShow/AllApps/AllApps";
 import InstalledApps from "../Components/DynamicShow/InstalledApps/InstalledApps";
+import HomePage from "../Components/DynamicShow/HomePage/HomePage";
 
 const router = createBrowserRouter([
   {
@@ -12,7 +13,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <h1>Siam</h1>,
+        element: <HomePage/>,
       },
       {
         path: "/allapps",

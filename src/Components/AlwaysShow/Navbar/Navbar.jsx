@@ -45,8 +45,8 @@ const Navbar = () => {
               tabIndex="-1"
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
             >
-              {navItems.map((navitem) => (
-                <NavbarLink to={navitem.to}>{navitem.children}</NavbarLink>
+              {navItems.map((navItem) => (
+                <NavbarLink to={navItem.to}>{navItem.children}</NavbarLink>
               ))}
             </ul>
           </div>
@@ -59,8 +59,8 @@ const Navbar = () => {
         </div>
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1 space-x-8">
-            {navItems.map((navitem) => (
-              <NavbarLink to={navitem.to}>{navitem.children}</NavbarLink>
+            {navItems.map((navItem) => (
+              <NavbarLink to={navItem.to}>{navItem.children}</NavbarLink>
             ))}
           </ul>
         </div>
