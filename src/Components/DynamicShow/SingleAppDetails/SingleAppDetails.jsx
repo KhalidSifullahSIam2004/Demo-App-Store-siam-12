@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use } from "react";
 import { FaArrowLeft, FaRegStar } from "react-icons/fa";
 import { IoMdDownload } from "react-icons/io";
 import { MdReviews } from "react-icons/md";
@@ -6,45 +6,74 @@ import { useParams } from "react-router";
 import useDataFetch from "../../../CustomHooks/useDataFetch";
 import appErrorImage from "../../../assets/images/App-Error.png";
 import { toast } from "react-toastify";
+import { InstalledAppsContext } from "../../../Contexts/InstalledAppsContext";
 
 const SingleAppDetails = () => {
   const { id } = useParams();
+
   const allAppData = useDataFetch();
-  const appData = allAppData.find(
-    (singleAppData) => singleAppData.id === Number(id),
+  const [installedApps, setInstalledApps] = use(InstalledAppsContext);
+
+  const exceptedAppData = allAppData.find((singleAppData) => singleAppData.id === Number(id));
+
+  if (!exceptedAppData) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center bg-white px-4 py-16">
+        <div className="text-center">
+          <img
+            src={appErrorImage}
+            alt="App not found"
+            className="mx-auto w-full max-w-64"
+          />
+
+          <h2 className="mt-6 text-3xl font-extrabold text-[#0f2740] md:text-4xl">
+            OPPS!! APP NOT FOUND
+          </h2>
+
+          <p className="mt-2 text-sm text-slate-500 md:text-base">
+            The app you are requesting is not found on our system, please try
+            another apps.
+          </p>
+
+          <button
+            type="button"
+            onClick={() => window.history.back()}
+            className="mt-6 inline-flex items-center gap-2 rounded-sm bg-[#7c4dff] px-6 py-2 text-sm font-semibold text-white transition hover:bg-[#6938ef]"
+          >
+            <FaArrowLeft />
+            Go Back!
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const { image, title, companyName, description, size, reviews, ratingAvg, downloads} = exceptedAppData;
+
+  const ratingList = [...exceptedAppData.ratings].reverse();
+
+  const isInstalled = installedApps.some(
+    (installedApp) =>
+      (typeof installedApp === "object" ? installedApp.id : installedApp) ===
+      exceptedAppData.id
   );
 
-  const {
-    image,
-    title,
-    companyName,
-    description,
-    size,
-    reviews,
-    ratingAvg,
-    downloads,
-  } = appData;
-
-  const ratingList = [...appData.ratings].reverse();
-
-  let biggestRatingCount = 0;
-
-  ratingList.map((item) => {
-    if (item.count > biggestRatingCount) {
-      biggestRatingCount = item.count;
-    }
-  });
-
-  const [isInstalled, setIsInstalled] = useState(false);
-
   const handleInstalled = () => {
-    setIsInstalled(true);
-    toast.success(`${title} is Installled Successfully!`, {
-      position: "top-center",
-    });
+    if (isInstalled) {
+      return;
+    }
+
+    setInstalledApps([...installedApps, exceptedAppData.id]);
+
+    toast.success(`${title} is Installled Successfully!`);
   };
 
-  return appData ? (
+  const biggestRatingCount = ratingList.reduce(
+    (highestCount, item) => Math.max(highestCount, item.count),
+    0
+  );
+
+  return (
     <div className="container bg-slate-50 mx-auto px-4 py-10 md:py-14">
       <div className=" p-5 md:p-8">
         <div className="mt-6 grid gap-8 xl:grid-cols-[220px_minmax(0,1fr)]">
@@ -106,7 +135,7 @@ const SingleAppDetails = () => {
             <button
               onClick={handleInstalled}
               type="button"
-              className={`mt-6 inline-flex items-center justify-center rounded-sm bg-[#17c964] px-6 py-3 text-base font-semibold text-white shadow-[0_16px_28px_-20px_rgba(23,201,100,0.95)] transition hover:bg-[#11b458] ${isInstalled && "cursor-not-allowed"}`}
+              className={`mt-6 inline-flex items-center justify-center rounded-sm bg-[#17c964] px-6 py-3 text-base font-semibold text-white shadow-[0_16px_28px_-20px_rgba(23,201,100,0.95)] transition hover:bg-[#11b458]  ${isInstalled ? "cursor-not-allowed" : "cursor-pointer"}`}
             >
               {isInstalled ? "Installed" : `Install Now (${size}) MB`}
             </button>
@@ -150,34 +179,6 @@ const SingleAppDetails = () => {
         <p className="mt-5 text-[1.02rem] leading-8 text-slate-600">
           {description}
         </p>
-      </div>
-    </div>
-  ) : (
-    <div className="min-h-[70vh] flex items-center justify-center bg-white px-4 py-16">
-      <div className="text-center">
-        <img
-          src={appErrorImage}
-          alt="App not found"
-          className="mx-auto w-full max-w-64"
-        />
-
-        <h2 className="mt-6 text-3xl font-extrabold text-[#0f2740] md:text-4xl">
-          OPPS!! APP NOT FOUND
-        </h2>
-
-        <p className="mt-2 text-sm text-slate-500 md:text-base">
-          The app you are requesting is not found on our system, please try
-          another apps.
-        </p>
-
-        <button
-          type="button"
-          onClick={() => window.history.back()}
-          className="mt-6 inline-flex items-center gap-2 rounded-sm bg-[#7c4dff] px-6 py-2 text-sm font-semibold text-white transition hover:bg-[#6938ef]"
-        >
-          <FaArrowLeft />
-          Go Back!
-        </button>
       </div>
     </div>
   );
