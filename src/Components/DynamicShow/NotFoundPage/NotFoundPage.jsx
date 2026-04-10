@@ -42,7 +42,7 @@ const NotFound = () => {
         
         <div className="mt-16 border-t border-white/10 pt-8">
           <p className="text-xs text-slate-500 uppercase tracking-widest">
-            Error Code: UI-404-NOT-FOUNDs
+            Error Code: UI-404-NOT-FOUND
           </p>
         </div>
       </div>
