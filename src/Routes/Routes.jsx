@@ -5,6 +5,7 @@ import AllApps from "../Components/DynamicShow/AllApps/AllApps";
 import InstalledApps from "../Components/DynamicShow/InstalledApps/InstalledApps";
 import HomePage from "../Components/DynamicShow/HomePage/HomePage";
 import SingleAppDetails from "../Components/DynamicShow/SingleAppDetails/SingleAppDetails";
+import Dashboard from "../Components/DynamicShow/Dashboard/Dashboard";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: "/installedapps",
         element: <InstalledApps />,
+      },
+      {
+        path: "/dashboard",
+        element: <Dashboard />,
       },
     ],
   },

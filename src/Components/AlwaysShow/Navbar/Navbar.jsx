@@ -17,6 +17,10 @@ const navItems = [
     to: "/installedapps",
     children: "Installation",
   },
+  {
+    to: "/dashboard",
+    children: "Dashboard",
+  },
 ];
 const Navbar = () => {
   return (
