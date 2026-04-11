@@ -112,6 +112,6 @@ This project is open source and available under the [MIT License](LICENSE).
 
 **Khalid Sifullah Siam**
 
-- GitHub: [@KhalidSifullahSIam2004](https://github.com/KhalidSifullahSIam2004)
+- GitHub: [@KhalidSifullahSIam2004](https://github.com/Khalid-Sifullah-Siam)
 - Project Repository: [Demo-App-Store-siam-12](https://github.com/KhalidSifullahSIam2004/Demo-App-Store-siam-12)
 - Live-site: https://demo-app-store-siam-12.netlify.app
